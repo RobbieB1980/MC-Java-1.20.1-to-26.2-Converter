@@ -1,0 +1,23 @@
+# OS / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Build outputs
+**/bin/
+**/obj/
+dist/
+*.log
+lib/decompiler-cache/
+lib/dep-cache/
+_smoke-decompile/
+
+# Local conversion outputs
+**/compile*.log
+**/LEGACY_MIGRATION_REPORT.md
+**/build/
+**/.gradle/

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>RB-Legacy-Java-Converter</AssemblyName>
+    <RootNamespace>RB.LegacyJavaConverter</RootNamespace>
+    <ApplicationIcon>..\..\assets\app.ico</ApplicationIcon>
+    <Product>RB Legacy Java Converter</Product>
+    <Company>RobbieB1980</Company>
+    <Version>1.5.0</Version>
+    <FileVersion>1.5.0</FileVersion>
+    <InformationalVersion>1.5.0</InformationalVersion>
+    <Description>Convert Forge 1.20.1 / NeoForge 1.21.x Java mod jars and workspaces to NeoForge 26.2 scaffolds</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Convert-Forge1201-ToNeoForge262.ps1" Link="tools\Convert-Forge1201-ToNeoForge262.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Convert-JarToProject.ps1" Link="tools\Convert-JarToProject.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Convert-OldJarToNeoForge262.ps1" Link="tools\Convert-OldJarToNeoForge262.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\README.md" Link="tools\README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\USAGE.md" Link="tools\docs\USAGE.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\JAR-PIPELINE.md" Link="tools\docs\JAR-PIPELINE.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\LICENSE" Link="tools\LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\CHANGELOG.md" Link="tools\CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\Srg1201Official.json" Link="tools\lib\Srg1201Official.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\Srg1201Common.json" Link="tools\lib\Srg1201Common.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\Build-SrgToOfficialMap.py" Link="tools\lib\Build-SrgToOfficialMap.py" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\DependencyCatalog.json" Link="tools\lib\DependencyCatalog.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\ModDependencyPipeline.ps1" Link="tools\lib\ModDependencyPipeline.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\ConversionCore.ps1" Link="tools\lib\ConversionCore.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\lib\PrimerChangeIndex.json" Link="tools\lib\PrimerChangeIndex.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
