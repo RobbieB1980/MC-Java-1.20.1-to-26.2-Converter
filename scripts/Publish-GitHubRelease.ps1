@@ -7,9 +7,9 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Tag = 'v1.5.2',
+    [string]$Tag = 'v1.5.3',
     [string]$Repo = 'RobbieB1980/MC-Java-1.20.1-to-26.2-Converter',
-    [string]$Name = 'MC Java 1.20.1 to 26.2 Converter v1.5.2'
+    [string]$Name = 'MC Java 1.20.1 to 26.2 Converter v1.5.3'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -65,12 +65,11 @@ Migration assistant for **Forge/NeoForge 1.20.1 through 26.1** projects and fini
 | ``RB-Legacy-Java-Converter-Setup.exe`` | Windows installer (self-contained; embeds portable toolset) |
 | ``RB-Legacy-Java-Converter-Portable.zip`` | No install - extract and run ``Start-Converter.bat`` or the EXE |
 
-### What's new in 1.5.2
+### What's new in 1.5.3
 
-- Fixed setup accidentally preferring an older portable ZIP beside the installer
-- Embedded payload now always takes precedence in release installers
-- Setup verifies the extracted app version and exact-primer migration stage
-- Includes the verified NextGen Furniture 1.21.1 → 26.2 migration path
+- Fixed the in-game ``Block id not set`` crash for custom block registration helpers
+- Block and block-item factories now receive 26.2 registry-keyed properties
+- Includes regression coverage and the v1.5.2 embedded-payload installer safeguards
 
 ### Requirements
 

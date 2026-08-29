@@ -44,7 +44,7 @@ public sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "RB Legacy Java Converter v1.5.2 — Project / JAR → NeoForge 26.2";
+        Text = "RB Legacy Java Converter v1.5.3 — Project / JAR → NeoForge 26.2";
         ClientSize = new Size(980, 760);
         MinimumSize = new Size(840, 640);
         StartPosition = FormStartPosition.CenterScreen;
@@ -68,7 +68,7 @@ public sealed class MainForm : Form
         header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
         header.Controls.Add(new Label
         {
-            Text = "RB Legacy Java Converter v1.5.2 — Project or finished JAR → NeoForge 26.2",
+            Text = "RB Legacy Java Converter v1.5.3 — Project or finished JAR → NeoForge 26.2",
             Font = new Font("Segoe UI Semibold", 12f),
             ForeColor = Color.White,
             AutoSize = true,

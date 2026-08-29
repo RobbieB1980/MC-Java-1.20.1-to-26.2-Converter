@@ -137,6 +137,12 @@ Example.java:22: error: incompatible types: Foo cannot be converted to Bar
     Assert-Equal 'Item tag registry key' '.add(ModBlocks.TABLE.asItem().builtInRegistryHolder().key())' (Convert-NeoForge262ApiMoves '.add(ModBlocks.TABLE.asItem())')
     Assert-Equal '26.2 API moves idempotent' '.add(ModBlocks.TABLE.asItem().builtInRegistryHolder().key())' (Convert-NeoForge262ApiMoves '.add(ModBlocks.TABLE.asItem().builtInRegistryHolder().key())')
     Assert-Equal 'Block entity renderer default method' 'class R implements BlockEntityRenderer<A,B> { void x(){ BlockEntityRenderer.super.extractRenderState(a,b,c,d,e); } }' (Convert-NeoForge262ApiMoves 'class R implements BlockEntityRenderer<A,B> { void x(){ super.extractRenderState(a,b,c,d,e); } }')
+    $registrySource = 'import java.util.function.Supplier; class M { Blocks BLOCKS = DeferredRegister.createBlocks("m"); Object x = registerBlock("chair", () -> new ChairBlock(Properties.of().strength(1))); <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) { return BLOCKS.register(name, block); } void item(String name, DeferredBlock<Block> block) { ModItems.ITEMS.register(name, () -> new BlockItem((Block)block.get(), new net.minecraft.world.item.Item.Properties())); } }'
+    $registryFixed = Convert-CustomBlockRegistrationText $registrySource
+    Assert-True 'Custom block helper receives keyed properties' ($registryFixed.Contains('registerBlock("chair", properties -> new ChairBlock(properties.strength(1)))'))
+    Assert-True 'Custom block helper uses keyed API' ($registryFixed.Contains('BLOCKS.registerBlock(name, block)'))
+    Assert-True 'Custom item helper receives keyed properties' ($registryFixed.Contains('ITEMS.registerItem(name, properties -> new BlockItem'))
+    Assert-Equal 'Custom registry rewrite idempotent' $registryFixed (Convert-CustomBlockRegistrationText $registryFixed)
     Assert-Equal 'Stained pane longest match' 'Blocks.STAINED_GLASS_PANE.black()' (Convert-ColorCollectionConstants 'Blocks.BLACK_STAINED_GLASS_PANE')
     Assert-Equal 'Concrete powder longest match' 'Blocks.CONCRETE_POWDER.white()' (Convert-ColorCollectionConstants 'Blocks.WHITE_CONCRETE_POWDER')
     Assert-Equal 'Color rewrite idempotent' 'Blocks.STAINED_GLASS_PANE.black()' (Convert-ColorCollectionConstants 'Blocks.STAINED_GLASS_PANE.black()')

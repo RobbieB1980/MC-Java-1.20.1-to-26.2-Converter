@@ -1690,6 +1690,12 @@ function Invoke-BlockItemIdPass {
         $t = $t -replace 'REGISTRY\.register\(block\.getId\(\)\.getPath\(\),\s*\(\)\s*->\s*new BlockItem\(\(Block\)block\.get\(\),\s*new Item\.Properties\(\)\)\)',
             'REGISTRY.registerItem(block.getId().getPath(), prop -> new BlockItem((Block)block.get(), prop))'
 
+        # Custom helper used by source mods such as NextGen Furniture. A Supplier
+        # hides the registry key until after construction, which crashes in 26.2.
+        # Convert it to DeferredRegister.Blocks.registerBlock's keyed Properties
+        # function and likewise let DeferredRegister.Items inject the item id.
+        $t = Convert-CustomBlockRegistrationText -Text $t
+
         if ($t -ne $o) {
             [System.IO.File]::WriteAllText($f.FullName, $t)
             $touched++

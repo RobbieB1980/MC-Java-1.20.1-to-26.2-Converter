@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.3 — 2026-08-29
+
+- Fixed the NeoForge 26.2 runtime crash `Block id not set` for custom `Supplier`-based block registration helpers.
+- Custom block and block-item factories now receive registry-keyed properties; added idempotent regression coverage.
+
 ## 1.5.2 — 2026-08-29
 
 - Fixed the self-contained installer preferring an older portable ZIP beside the setup EXE over its embedded payload.

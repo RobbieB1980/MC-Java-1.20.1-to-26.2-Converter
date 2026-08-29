@@ -307,6 +307,21 @@ function Get-PrimerMigrationRules {
     return $result.ToArray()
 }
 
+function Convert-CustomBlockRegistrationText {
+    param([Parameter(Mandatory)][string]$Text)
+    if ($Text -notmatch 'DeferredRegister\.createBlocks\(' -or
+        $Text -notmatch 'registerBlock\(String name, Supplier<T> block\)') { return $Text }
+    $Text = $Text.Replace('import java.util.function.Supplier;', 'import java.util.function.Function;')
+    $Text = $Text.Replace('registerBlock(String name, Supplier<T> block)', 'registerBlock(String name, Function<Properties, T> block)')
+    $Text = $Text.Replace('BLOCKS.register(name, block)', 'BLOCKS.registerBlock(name, block)')
+    $Text = [regex]::Replace($Text, '(registerBlock\(\s*"[^"]+"\s*,\s*)\(\)\s*->\s*new ', '$1properties -> new ')
+    $Text = $Text.Replace('Properties.of()', 'properties')
+    $Text = [regex]::Replace($Text,
+        'ModItems\.ITEMS\.register\(name,\s*\(\)\s*->\s*new BlockItem\(\(Block\)block\.get\(\),\s*new net\.minecraft\.world\.item\.Item\.Properties\(\)\)\)',
+        'ModItems.ITEMS.registerItem(name, properties -> new BlockItem((Block)block.get(), properties))')
+    return $Text
+}
+
 function Write-PrimerQuickReference {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Profile, [Parameter(Mandatory)][string]$Path)
