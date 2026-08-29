@@ -117,6 +117,12 @@ Example.java:22: error: incompatible types: Foo cannot be converted to Bar
     Assert-Equal '1.21.11 chain ends at target' '26.2' $lateChain[-1].to
     $alreadyChain = @(Get-PrimerMigrationChain -SourceVersion '26.2' -Index $primerIndex)
     Assert-Equal '26.2 has no pending primers' 0 $alreadyChain.Count
+    $earlyRules = @(Get-PrimerMigrationRules -SourceVersion '1.21.1' -Index $primerIndex)
+    Assert-True '1.21.1 selects render-state rule' ($earlyRules -contains 'block-entity-render-state')
+    Assert-True '1.21.1 selects value IO rule' ($earlyRules -contains 'block-entity-value-io')
+    Assert-True '1.21.1 selects entity registration rule' ($earlyRules -contains 'deferred-entity-type-registration')
+    $lateRules = @(Get-PrimerMigrationRules -SourceVersion '1.21.11' -Index $primerIndex)
+    Assert-True '1.21.11 skips old render-state rule' (-not ($lateRules -contains 'block-entity-render-state'))
     $primerReport = Join-Path $fixtureRoot 'PRIMER_CHANGE_INDEX.md'
     $primerCount = Write-PrimerQuickReference -Profile ([pscustomobject]@{ SourceVersion='1.21.11'; Route='neoforge-1.21.x' }) -Path $primerReport
     Assert-Equal 'Primer report step count' 2 $primerCount

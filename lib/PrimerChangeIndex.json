@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "target": "26.2",
   "attribution": "NeoForged migration primers by their respective authors; summaries are original condensed index text with links to the licensed source.",
   "transitions": [
@@ -29,22 +29,30 @@
     {
       "from": "1.21.1", "to": "1.21.2/3", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/1.21.2/",
       "changes": ["Entity and item rendering state migrations", "Equipment, data component, recipe, and registry changes", "Client input, GUI, networking, and NeoForge API updates"],
-      "detect": ["EntityRenderer", "ItemRenderer", "DataComponents", "RegisterPayloadHandlersEvent"], "passes": ["neoforge-26-api"]
+      "detect": ["EntityRenderer", "BlockEntityRenderer", "ItemRenderer", "DataComponents", "RegisterPayloadHandlersEvent"],
+      "passes": ["neoforge-26-api"],
+      "rules": ["entity-render-state", "block-entity-render-state"]
     },
     {
       "from": "1.21.2/3", "to": "1.21.4", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/1.21.4/",
       "changes": ["Client item definitions replace legacy item model overrides", "Item tint, conditional, select, range, composite, and special models", "Particles move through render types", "Resource reload metadata serializers move toward codecs"],
-      "detect": ["ItemOverrides", "ModelResourceLocation", "ParticleRenderType", "MetadataSectionSerializer"], "passes": ["assets"]
+      "detect": ["ItemOverrides", "ModelResourceLocation", "ParticleRenderType", "MetadataSectionSerializer"],
+      "passes": ["assets"],
+      "rules": ["standalone-model-keys"]
     },
     {
       "from": "1.21.4", "to": "1.21.5", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/1.21.5/",
       "changes": ["Block and item model pipeline rewrite", "Baked models become quad collections/block-state model parts", "Codec-driven reload, timer, and registry context changes", "Game test, JOML interface, tag, and mob-effect changes"],
-      "detect": ["BakedModel", "BlockModel", "ModelBaker", "TimerCallbacks"], "passes": ["neoforge-26-api", "assets"]
+      "detect": ["BakedModel", "BlockModel", "ModelBaker", "TimerCallbacks"],
+      "passes": ["neoforge-26-api", "assets"],
+      "rules": ["baked-model-to-block-state-model", "legacy-direction-property"]
     },
     {
       "from": "1.21.5", "to": "1.21.6", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/1.21.6/",
       "changes": ["GUI prepare/extract/render separation and ordered elements", "Dialog, waypoint, and custom action APIs", "Blaze3D buffers, uniforms, fog, and scissoring changes", "Direct NBT access replaced by generic encode/decode flows", "Tag providers and server-player APIs change"],
-      "detect": ["GuiGraphics", "renderBg", "renderLabels", "CompoundTag", "TagAppender"], "passes": ["mcreator-1.21.x", "neoforge-26-api"]
+      "detect": ["GuiGraphics", "renderBg", "renderLabels", "CompoundTag", "TagAppender", "ExistingFileHelper"],
+      "passes": ["mcreator-1.21.x", "neoforge-26-api"],
+      "rules": ["block-entity-value-io", "legacy-datagen-isolation"]
     },
     {
       "from": "1.21.6", "to": "1.21.7", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/1.21.7/",
@@ -71,7 +79,9 @@
     {
       "from": "1.21.11", "to": "26.1", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/26.1/",
       "changes": ["Java 25 and deobfuscated vanilla", "Loot codecs and validation overhaul", "Datapack villager trades", "Item instances, stack templates, recipes, and dye components", "World clocks, time markers, and saved-data split", "Rendering materials, models, tints, GUI extraction, fluids, camera, and feature submission"],
-      "detect": ["GuiGraphics", "renderBg", "LootItemFunctionType", "SavedData", "MultiBufferSource"], "passes": ["neoforge-26-api", "mcreator-1.21.x", "assets"]
+      "detect": ["GuiGraphics", "renderBg", "LootItemFunctionType", "SavedData", "MultiBufferSource", "BlockEntityType.Builder", "EntityType.Builder"],
+      "passes": ["neoforge-26-api", "mcreator-1.21.x", "assets"],
+      "rules": ["block-entity-type-constructor", "deferred-entity-type-registration", "entity-server-damage", "removed-block-lifecycle"]
     },
     {
       "from": "26.1", "to": "26.2", "sourceType": "official-primer", "officialPrimer": "https://docs.neoforged.net/primer/docs/26.2/",

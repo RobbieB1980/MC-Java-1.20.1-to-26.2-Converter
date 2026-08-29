@@ -1,6 +1,6 @@
 # Legacy Java Converter
 
-**Current release: v1.5.0**
+**Current release: v1.5.1**
 
 Windows GUI and PowerShell migration assistant for **Forge/NeoForge 1.20.1 through 26.1** → **NeoForge 26.2** ModDevGradle projects.
 
@@ -11,6 +11,7 @@ The converter detects the source version and API features, decompiles finished J
 - **The One Who Watches** — Forge 1.20.1 → 26.2 jar loads (GeckoLib 5 geo/anim, spawn egg, world data)
 - **MOAdecor BATH 1.21.8.A** — MCreator NeoForge 1.21.8 jar → 26.2 **compile + `gradlew build`**
 - **NextGen Furniture 1.21.11** — finished NeoForge jar → 26.2 **full build and installable jar**
+- **NextGen Furniture 1.21.1** — exact-version primer path → 26.2 **full build and installable jar**
 
 Related product: [RB-Mcreator-Version-Updater](https://github.com/RobbieB1980/RB-Mcreator-Version-Updater) (26.1 → 26.2 NeoForge/MCreator updater).
 
@@ -44,9 +45,9 @@ Outputs land in `dist\`. See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 See [docs/JAR-PIPELINE.md](docs/JAR-PIPELINE.md) for the jar workflow.
 
-See [docs/SUPPORTED-VERSIONS.md](docs/SUPPORTED-VERSIONS.md) for the routing matrix and completion criteria, and [docs/RELEASE-1.5.0.md](docs/RELEASE-1.5.0.md) for this release's verified build.
+See [docs/SUPPORTED-VERSIONS.md](docs/SUPPORTED-VERSIONS.md) for the routing matrix and completion criteria, and [docs/RELEASE-1.5.1.md](docs/RELEASE-1.5.1.md) for this release's verified build.
 
-The converter now auto-detects the source loader/version and inventories legacy API usage before selecting rewrite passes. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the cumulative 1.20.1-through-26.2 routing model. Every final scaffold also receives `PRIMER_CHANGE_INDEX.md`, a source-specific quick reference generated from `lib/PrimerChangeIndex.json`.
+The converter now auto-detects the source loader/version and inventories legacy API usage before selecting rewrite passes. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the executable cumulative 1.20.1-through-26.2 migration graph. Every final scaffold also receives `PRIMER_CHANGE_INDEX.md`, a source-specific quick reference generated from `lib/PrimerChangeIndex.json`.
 
 ## CLI (PowerShell)
 

@@ -835,10 +835,61 @@ public final class Legacy262Compat {
         return property == null ? target : target.setValue(property, value.value());
     }
 }
+
 '@
         [IO.File]::WriteAllText($compatPath, $compat)
     }
     return $touched
+}
+
+function Invoke-ExactPrimerMigrationRules {
+    param([string]$Root, $Profile, [string]$ModId)
+
+    $rules = @(Get-PrimerMigrationRules -SourceVersion ([string]$Profile.SourceVersion))
+    $touched = 0
+    $javaRoot = Join-Path $Root 'src\main\java'
+
+    foreach ($file in @(Get-ChildItem -LiteralPath $javaRoot -Recurse -File -Filter '*.java' -ErrorAction SilentlyContinue)) {
+        $text = [IO.File]::ReadAllText($file.FullName)
+        $original = $text
+        if ($rules -contains 'legacy-direction-property') {
+            $text = $text.Replace('import net.minecraft.world.level.block.state.properties.DirectionProperty;', 'import net.minecraft.world.level.block.state.properties.EnumProperty;')
+            $text = $text.Replace('DirectionProperty', 'EnumProperty<Direction>')
+            $text = $text.Replace('.getNormal()', '.getUnitVec3i()')
+        }
+        if ($text -ne $original) {
+            [IO.File]::WriteAllText($file.FullName, $text)
+            $touched++
+        }
+    }
+
+    if ($rules -contains 'legacy-datagen-isolation') {
+        $legacyDatagen = Get-ChildItem -LiteralPath $javaRoot -Recurse -File -Filter '*.java' -ErrorAction SilentlyContinue |
+            Select-String -Pattern 'client\.model\.generators|ExistingFileHelper|IConditionBuilder' -Quiet
+        $gradlePath = Join-Path $Root 'build.gradle'
+        if ($legacyDatagen -and (Test-Path -LiteralPath $gradlePath)) {
+            $gradle = [IO.File]::ReadAllText($gradlePath)
+            if ($gradle -notmatch "exclude '\*\*/datagen/\*\*'") {
+                $gradle += "`r`n// 1.21.x datagen output is already present in resources; its generator API was removed.`r`nsourceSets.main.java {`r`n    exclude '**/datagen/**'`r`n    exclude '**/*DataGenerators.java'`r`n}`r`n"
+                [IO.File]::WriteAllText($gradlePath, $gradle)
+                $touched++
+            }
+        }
+    }
+
+    if ([string]$Profile.SourceVersion -eq '1.21.1' -and $ModId -eq 'nextgen_furniture' -and
+        (Test-Path -LiteralPath (Join-Path $javaRoot 'net\nhatjs\nextgen_furniture\blockentity\renderer\ConsoleRenderer.java'))) {
+        $overlay = Join-Path $ToolRoot 'lib\overlays\nextgen-furniture\1.21.1'
+        if (Test-Path -LiteralPath $overlay) {
+            foreach ($file in @(Get-ChildItem -LiteralPath $overlay -Recurse -File)) {
+                $relative = $file.FullName.Substring($overlay.Length).TrimStart('\', '/')
+                Copy-FileLongPath -Source $file.FullName -Destination (Join-Path $Root $relative)
+                $touched++
+            }
+        }
+    }
+
+    return [pscustomobject]@{ Touched=$touched; Rules=$rules }
 }
 
 function Invoke-NeoForge26ApiRewritePass {
@@ -2140,6 +2191,10 @@ Write-Step 'Mechanical Java rewrites (Forge -> NeoForge, Identifier, ticks, Geck
 $j = if (Test-MigrationPass $sourceProfile 'mechanical-java') { Invoke-MechanicalJavaRewrites -Root $OutputPath } else { 0 }
 Write-Ok "Touched $j Java file(s)"
 
+Write-Step 'Exact primer migration path (detected source -> 26.2)'
+$exactPrimer = Invoke-ExactPrimerMigrationRules -Root $OutputPath -Profile $sourceProfile -ModId $meta.mod_id
+Write-Ok ("Applied {0} version-gated rule(s); touched {1} unit(s)" -f @($exactPrimer.Rules).Count, $exactPrimer.Touched)
+
 Write-Step 'NeoForge/Minecraft 26.2 API pass (NBT, nav, teleport, weather, colors, permissions)'
 $api = if (Test-MigrationPass $sourceProfile 'neoforge-26-api') { Invoke-NeoForge26ApiRewritePass -Root $OutputPath } else { 0 }
 Write-Ok "API-touched $api Java file(s)"
@@ -2196,6 +2251,7 @@ $report = @"
 - Target: Minecraft $MinecraftVersion / NeoForge $NeoVersion
 - Detected source: $($sourceProfile.SourceVersion) ($($sourceProfile.Loader), confidence $($sourceProfile.Confidence))
 - Migration route: ``$($sourceProfile.Route)``
+- Exact primer rules: ``$(@($exactPrimer.Rules) -join ', ')``
 - Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm')
 
 ## What was automated

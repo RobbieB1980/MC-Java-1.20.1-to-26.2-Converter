@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.1 — 2026-08-29
+
+- Primer transitions now carry executable rule IDs, so the detected source version selects only the cumulative migration path required to reach 26.2.
+- Added 1.21.1 render-state, standalone-model, block-entity value I/O, entity registration/damage, direction-property and legacy-datagen migrations.
+- Added a verified semantic overlay for NextGen Furniture 1.21.1.
+- Proved the untouched 1.21.1 decompile through the normal converter pipeline: full `gradlew build` and an installable `nextgen_furniture-0.0.9-beta+mc26.2-neoforge.jar`.
+
 ## 1.5.0 — 2026-08-29
 
 Complete staged conversion and verification release.

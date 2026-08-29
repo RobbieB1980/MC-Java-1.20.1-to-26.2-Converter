@@ -292,6 +292,21 @@ function Get-PrimerMigrationChain {
     return @($all[$position..($all.Count - 1)])
 }
 
+function Get-PrimerMigrationRules {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$SourceVersion, $Index = (Get-PrimerChangeIndex))
+    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    $result = New-Object Collections.Generic.List[string]
+    foreach ($transition in @(Get-PrimerMigrationChain -SourceVersion $SourceVersion -Index $Index)) {
+        $ruleProperty = $transition.PSObject.Properties['rules']
+        $transitionRules = if ($null -ne $ruleProperty) { @($ruleProperty.Value) } else { @() }
+        foreach ($rule in $transitionRules) {
+            if ($rule -and $seen.Add([string]$rule)) { $result.Add([string]$rule) | Out-Null }
+        }
+    }
+    return $result.ToArray()
+}
+
 function Write-PrimerQuickReference {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Profile, [Parameter(Mandatory)][string]$Path)
