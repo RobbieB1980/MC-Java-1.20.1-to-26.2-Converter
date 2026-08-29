@@ -44,7 +44,7 @@ public sealed class SetupForm : Form
 
         var title = new Label
         {
-            Text = AppDisplayName + " v1.5.1",
+            Text = AppDisplayName + " v1.5.2",
             Font = new Font("Segoe UI Semibold", 14f),
             ForeColor = Color.White,
             Location = new Point(24, 18),
@@ -266,6 +266,19 @@ public sealed class SetupForm : Form
         if (!File.Exists(exe))
             throw new InvalidOperationException("Package extracted but " + ExeName + " is missing.");
 
+        var setupVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+        var installedVersion = FileVersionInfo.GetVersionInfo(exe).FileVersion;
+        if (!string.IsNullOrWhiteSpace(setupVersion) &&
+            !string.Equals(installedVersion, setupVersion, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                $"Payload verification failed: setup is v{setupVersion}, but the extracted app is v{installedVersion ?? "unknown"}.");
+
+        var converterScript = Path.Combine(dest, "tools", "Convert-Forge1201-ToNeoForge262.ps1");
+        if (!File.Exists(converterScript) ||
+            !File.ReadAllText(converterScript).Contains("Exact primer migration path", StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Payload verification failed: the installed converter is missing the exact-version primer migration stage.");
+
         var iconPath = Path.Combine(dest, "app.ico");
         TryExtractEmbeddedIcon(iconPath);
 
@@ -361,7 +374,7 @@ public sealed class SetupForm : Form
 
     private static void WriteUninstaller(string dest, string exe)
     {
-        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.5.1";
+        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.5.2";
         var ps1 = Path.Combine(dest, "Uninstall.ps1");
         var cmd = Path.Combine(dest, "Uninstall.cmd");
 
@@ -408,7 +421,7 @@ Start-Process -FilePath cmd.exe -ArgumentList '/c', $cmd -WindowStyle Hidden
 
     private static void RegisterUninstall(string dest, string exe)
     {
-        var version = "1.5.1";
+        var version = "1.5.2";
         var versionFile = Path.Combine(dest, "version.txt");
         if (File.Exists(versionFile))
             version = File.ReadAllText(versionFile).Trim();
@@ -451,18 +464,8 @@ Start-Process -FilePath cmd.exe -ArgumentList '/c', $cmd -WindowStyle Hidden
     private static string? FindPayloadZip()
     {
         var baseDir = AppContext.BaseDirectory;
-        var names = new[]
-        {
-            "portable-payload.zip",
-            "RB-Legacy-Java-Converter-Portable.zip",
-            "payload.zip"
-        };
-        foreach (var n in names)
-        {
-            var p = Path.Combine(baseDir, n);
-            if (File.Exists(p)) return p;
-        }
-
+        // A release setup is self-contained. Its embedded payload must win over
+        // arbitrary older ZIP files left beside the installer.
         var asm = Assembly.GetExecutingAssembly();
         var resourceName = asm.GetManifestResourceNames()
             .FirstOrDefault(n => n.EndsWith("portable-payload.zip", StringComparison.OrdinalIgnoreCase)
@@ -474,6 +477,18 @@ Start-Process -FilePath cmd.exe -ArgumentList '/c', $cmd -WindowStyle Hidden
             using (var fs = File.Create(temp))
                 stream.CopyTo(fs);
             return temp;
+        }
+
+        var names = new[]
+        {
+            "portable-payload.zip",
+            "RB-Legacy-Java-Converter-Portable.zip",
+            "payload.zip"
+        };
+        foreach (var n in names)
+        {
+            var p = Path.Combine(baseDir, n);
+            if (File.Exists(p)) return p;
         }
 
         var dev = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", "dist", "portable-payload.zip"));

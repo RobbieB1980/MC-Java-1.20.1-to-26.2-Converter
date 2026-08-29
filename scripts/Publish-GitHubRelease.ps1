@@ -3,13 +3,13 @@
   Create/update a GitHub Release and upload portable + setup artifacts from dist/.
 
 .EXAMPLE
-  .\scripts\Publish-GitHubRelease.ps1 -Tag v1.5.1
+  .\scripts\Publish-GitHubRelease.ps1 -Tag v1.5.2
 #>
 [CmdletBinding()]
 param(
-    [string]$Tag = 'v1.5.1',
+    [string]$Tag = 'v1.5.2',
     [string]$Repo = 'RobbieB1980/MC-Java-1.20.1-to-26.2-Converter',
-    [string]$Name = 'MC Java 1.20.1 to 26.2 Converter v1.5.1'
+    [string]$Name = 'MC Java 1.20.1 to 26.2 Converter v1.5.2'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -65,12 +65,12 @@ Migration assistant for **Forge/NeoForge 1.20.1 through 26.1** projects and fini
 | ``RB-Legacy-Java-Converter-Setup.exe`` | Windows installer (self-contained; embeds portable toolset) |
 | ``RB-Legacy-Java-Converter-Portable.zip`` | No install - extract and run ``Start-Converter.bat`` or the EXE |
 
-### What's new in 1.5.1
+### What's new in 1.5.2
 
-- Exact source-version detection now selects executable cumulative primer rules
-- 1.21.1 render-state, model, value-I/O, registration and entity API migrations
-- Version-and-mod-gated semantic overlay support
-- Verified NextGen Furniture 1.21.1 → 26.2 full Gradle build and installable JAR
+- Fixed setup accidentally preferring an older portable ZIP beside the installer
+- Embedded payload now always takes precedence in release installers
+- Setup verifies the extracted app version and exact-primer migration stage
+- Includes the verified NextGen Furniture 1.21.1 → 26.2 migration path
 
 ### Requirements
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2 — 2026-08-29
+
+- Fixed the self-contained installer preferring an older portable ZIP beside the setup EXE over its embedded payload.
+- Setup now verifies the installed application version and exact-primer migration stage before reporting success.
+
 ## 1.5.1 — 2026-08-29
 
 - Primer transitions now carry executable rule IDs, so the detected source version selects only the cumulative migration path required to reach 26.2.
